@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f9ff">
+  <meta name="description" content="ResumeAI — Intelligent resume analyzer comparing your resume against job requirements with instant skill matches and actionable suggestions.">
+  <title>ResumeAI — Smart Resume Analyzer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+</head>
+<body>
+  <header class="navbar">
+    <a class="brand" href="/" aria-label="ResumeAI home">
+      <span class="brand-icon">R</span>
+      Resume<span>AI</span>
+    </a>
+    <nav>
+      <a href="#how-it-works">How it works</a>
+      <a href="#analyzer">Analyzer</a>
+    </nav>
+    <a class="nav-cta" href="#analyzer">Get started <span>↗</span></a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow"><span class="status-dot"></span> YOUR NEXT OPPORTUNITY STARTS HERE</div>
+      <h1>Make your resume<br>work <span>smarter.</span></h1>
+      <p class="hero-copy">
+        Discover how well your resume fits your dream role.
+        Get instant skill insights and actionable suggestions.
+      </p>
+      <div class="hero-points">
+        <span>✓ Free to use</span>
+        <span>✓ PDF analysis</span>
+        <span>✓ Private processing</span>
+      </div>
+      <a class="primary-button hero-button" href="#analyzer">Analyze my resume <span>→</span></a>
+    </section>
+
+    <section class="workspace section" id="analyzer">
+      <div class="section-heading">
+        <div>
+          <span class="section-label">RESUME WORKSPACE</span>
+          <h2>Let's get you job-ready.</h2>
+          <p>Upload your resume and add the job you're targeting.</p>
+        </div>
+        <div class="step-indicator"><span>01</span> / 02</div>
+      </div>
+
+      <form id="analyzer-form" class="analyzer-grid" novalidate>
+        <div class="panel">
+          <div class="panel-heading">
+            <span class="step-number">01</span>
+            <div>
+              <h3>Your resume</h3>
+              <p>Start with your latest resume.</p>
+            </div>
+          </div>
+
+          <label class="upload-zone" id="upload-zone" for="resume-file">
+            <input id="resume-file" type="file" accept=".pdf,application/pdf" hidden>
+            <div class="upload-icon">↑</div>
+            <strong>Drop your resume here</strong>
+            <span class="upload-secondary">or <span class="browse-link">browse files</span></span>
+            <span class="file-hint">PDF only · Maximum 4 MB</span>
+          </label>
+
+          <div id="file-preview" class="file-preview" hidden>
+            <span class="file-icon">PDF</span>
+            <div class="file-info">
+              <strong id="file-name"></strong>
+              <span id="file-size"></span>
+            </div>
+            <button type="button" id="remove-file" class="remove-button" aria-label="Remove resume">×</button>
+          </div>
+
+          <div class="privacy-note">
+            <span>⌑</span>
+            <p>Your resume is processed temporarily for analysis and isn't intentionally stored by this app.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading">
+            <span class="step-number">02</span>
+            <div>
+              <h3>Target job description</h3>
+              <p>Tell us about the role you want.</p>
+            </div>
+          </div>
+
+          <label class="field-label" for="job-description">Job description</label>
+          <textarea id="job-description" name="job_description"
+            placeholder="Paste the job description here...
+
+Example:
+We are looking for a Python developer with experience in Flask, REST APIs, SQL and Git."
+            maxlength="20000" required></textarea>
+          <div class="textarea-footer">
+            <span>Include responsibilities and required skills.</span>
+            <span id="character-count">0 / 20000</span>
+          </div>
+
+          <div class="analysis-info">
+            <span class="sparkle">✳</span>
+            <div>
+              <strong>What you'll discover</strong>
+              <p>Skill matches, missing skills, relevance score and improvement tips.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="submit-area">
+          <p>By continuing, you agree to use the analysis as guidance, not a hiring decision.</p>
+          <button type="submit" id="analyze-button" class="primary-button">
+            <span id="button-text">Analyze my resume</span>
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </form>
+
+      <div id="error-message" class="error-message" role="alert" hidden></div>
+      <div id="loading-message" class="loading-message" role="status" hidden>
+        <span class="spinner"></span>
+        <div><strong>Analyzing your resume...</strong><p>Comparing your resume with the job requirements.</p></div>
+      </div>
+    </section>
+
+    <section id="results-section" class="results-section section" hidden>
+      <div class="section-heading">
+        <div>
+          <span class="section-label">YOUR PERSONAL REPORT</span>
+          <h2>Here's your resume breakdown.</h2>
+          <p>Use these insights to identify areas to improve.</p>
+        </div>
+        <button id="reset-button" class="secondary-button" type="button">← New analysis</button>
+      </div>
+
+      <div class="results-grid">
+        <article class="result-card score-card">
+          <span class="card-label">RESUME MATCH SCORE</span>
+          <div class="score-ring" id="score-ring">
+            <div class="score-inner">
+              <strong id="score-value">0%</strong>
+              <span>match</span>
+            </div>
+          </div>
+          <h3 id="score-heading">Your results</h3>
+          <p id="score-description">A useful starting point for improving your resume.</p>
+          <div class="score-breakdown">
+            <div><span>Text similarity</span><strong id="text-score">0%</strong></div>
+            <div><span>Skill coverage</span><strong id="skill-score">0%</strong></div>
+          </div>
+        </article>
+
+        <article class="result-card skills-card">
+          <span class="card-label">SKILL ANALYSIS</span>
+          <h3>You're bringing these skills.</h3>
+          <p class="card-description">Skills detected in both your resume and the job description.</p>
+          <div id="matched-skills" class="skill-list"></div>
+          <div id="matched-empty" class="empty-note" hidden>No matching skills detected yet. Try a more detailed resume or job description.</div>
+          <div class="missing-divider"></div>
+          <h3>Skills to explore</h3>
+          <p class="card-description">Job skills not detected in your resume. You may already have these skills, so verify before editing.</p>
+          <div id="missing-skills" class="skill-list"></div>
+          <div id="missing-empty" class="empty-note" hidden>All detected job skills were also found in your resume.</div>
+        </article>
+
+        <article class="result-card suggestions-card">
+          <span class="card-label">NEXT STEPS</span>
+          <h3>Make your resume stronger.</h3>
+          <p class="card-description">Practical suggestions based on the analysis.</p>
+          <ul id="suggestions-list" class="suggestions-list"></ul>
+          <div class="report-footer">
+            <span id="word-count">0 words analyzed</span>
+            <button id="print-button" type="button" class="secondary-button">Print report ↗</button>
+          </div>
+        </article>
+      </div>
+      <p class="disclaimer">This score uses text similarity and detected skills. It does not measure actual ability, guarantee an interview, or make an objective hiring assessment.</p>
+    </section>
+
+    <section class="how-section section" id="how-it-works">
+      <div class="center-heading">
+        <span class="section-label">SIMPLE BY DESIGN</span>
+        <h2>Three steps to more clarity.</h2>
+        <p>Understand where your resume stands before you apply.</p>
+      </div>
+      <div class="how-grid">
+        <article class="how-card"><div class="how-icon purple">↑</div><span>STEP 01</span><h3>Upload your resume</h3><p>Start with a PDF containing your experience, projects and skills.</p></article>
+        <article class="how-card"><div class="how-icon blue">⌕</div><span>STEP 02</span><h3>Add your target role</h3><p>Paste the job description to identify the skills that matter for the role.</p></article>
+        <article class="how-card"><div class="how-icon green">✳</div><span>STEP 03</span><h3>Explore your insights</h3><p>Review matching skills and get ideas for improving your resume.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="brand" href="/"><span class="brand-icon">R</span> Resume<span>AI</span></a>
+    <p>Built to help you take the next step in your career.</p>
+    <span>© 2026 ResumeAI · AI-assisted guidance</span>
+  </footer>
+</body>
+</html>
+
